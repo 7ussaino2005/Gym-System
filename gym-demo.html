@@ -3,24 +3,10 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font:15px system-ui;color:#1d2735;background:#f4f6f8}header{background:#172333;color:white;padding:24px max(24px,calc((100% - 1120px)/2));font-size:20px;font-weight:750}main{max-width:1120px;margin:auto;padding:44px 24px}h1{font-size:clamp(34px,7vw,52px);margin:0;letter-spacing:-.055em}p{color:#526174}nav,.stats,.toolbar{display:flex;gap:12px;flex-wrap:wrap}.stats{margin:28px 0}.stat{flex:1;min-width:140px;background:white;padding:22px;border:1px solid #dce3ea;border-radius:14px}.stat strong{display:block;font-size:30px;margin-top:8px}.panel{background:white;margin-top:16px;padding:24px;border:1px solid #dce3ea;border-radius:16px}.toolbar{justify-content:space-between;align-items:center}h2{margin:0}button,input,select{font:inherit;border:1px solid #aab8c6;border-radius:8px;padding:9px 12px;background:white;color:inherit}button{cursor:pointer}button[aria-selected=true],.primary{background:#075e54;color:white;border-color:#075e54}button:focus-visible,a:focus-visible{outline:3px solid #089484;outline-offset:2px}.table-wrap{overflow:auto;margin-top:16px}table{width:100%;border-collapse:collapse;min-width:500px}td,th{text-align:left;padding:13px 8px;border-bottom:1px solid #e1e7ed}th{font-size:13px;color:#526174}dialog{border:0;border-radius:16px;padding:24px;width:min(420px,90vw)}dialog::backdrop{background:#17233399}label{display:grid;gap:6px;margin:15px 0}footer{margin-top:24px;color:#526174}a{color:#075e54}
 .overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:20px}.overview button{text-align:left;padding:20px;border-color:#dce3ea;background:#f7faf9}.overview button:hover{border-color:#075e54}.overview strong,.overview span{display:block}.overview strong{font-size:18px;margin-bottom:6px;color:#075e54}.overview span{color:#526174}.toolbar input{margin-right:4px}dialog{max-height:90vh;overflow:auto;width:min(620px,94vw)}#fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:0 14px}#fields input{width:100%}[hidden]{display:none!important}#error{color:#9b2727}details{padding:16px;margin-top:12px;border:1px solid #dce3ea;border-radius:10px}summary{cursor:pointer;font-weight:700}details li{margin:10px 0}td:first-child{overflow-wrap:anywhere;max-width:130px}.pager{display:flex;align-items:center;gap:12px;margin-top:16px}.pager button:disabled{opacity:.45;cursor:default}#status:empty{display:none}
-:root{--ink:#132934;--muted:#526773;--line:#dce6e7;--green:#086658;--green-dark:#084e46;--canvas:#f3f7f6}
-body{background:var(--canvas);color:var(--ink);font-family:system-ui,sans-serif}
-header{padding:17px max(22px,calc((100% - 1120px)/2 + 24px));background:#102d34;border-bottom:1px solid #29464a}
-.brand{display:flex;align-items:center;gap:12px;white-space:nowrap}.brand strong,.brand small{display:block}.brand small{font-size:12px;color:#a9c9c3;font-weight:500}.brand-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#a6ead8;color:#123832;font-size:14px}
-main{padding-top:28px}.intro{position:relative;overflow:hidden;padding:clamp(23px,5vw,47px);border-radius:20px;background:radial-gradient(ellipse at 100% 5%,#226e62 0,transparent 58%),linear-gradient(120deg,#102d34,#12473f);color:white}
-.intro p{color:#c4e4dc;margin-bottom:0}.intro h1{font-size:clamp(29px,5.6vw,55px);line-height:1.04}
-.stats{gap:14px;margin:18px 0 23px}.stat{border-color:var(--line);border-top:3px solid #55af9b;box-shadow:0 3px 12px #1b454408;color:var(--muted);padding:16px 20px}.stat strong{color:var(--ink);font-variant-numeric:tabular-nums}
-nav{gap:7px}nav button{border-color:transparent;background:transparent;color:#36515b;font-weight:650}nav button:hover{background:#e3f0ec}nav button[aria-selected=true],.primary{background:var(--green);color:#fff;border-color:var(--green)}
-.panel{border-color:var(--line);box-shadow:0 5px 18px #1b454408;padding:clamp(15px,3vw,26px)}.toolbar{gap:12px}.toolbar #controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.startup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;font-size:13px;color:var(--muted)}.startup input{max-width:100%;font-size:12px}
-.overview{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}.overview button{background:#f5faf8;border-color:#dcece5;display:flex;flex-direction:column;align-items:flex-start;gap:8px}.overview .tile-icon{display:grid;place-items:center;width:33px;height:33px;background:#d9f0e8;color:var(--green-dark);border-radius:9px;font-size:18px}.overview strong{margin:0}.overview b{margin-top:auto;padding-top:7px;color:var(--green-dark);font-size:13px}
-th{background:#edf5f2;color:#3c5760}td,th{padding:12px}tbody tr:hover{background:#f6fbfa}td:first-child{font-variant-numeric:tabular-nums;font-weight:700;color:#0c6458;white-space:nowrap}
-button:hover{border-color:var(--green)}.primary:hover,nav button[aria-selected=true]:hover{background:var(--green-dark)}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #289980;outline-offset:2px}
-.roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:10px;align-items:start}.roster details{background:#f8fbfa;border-color:var(--line)}.roster li{padding:3px 0}.roster button{font-size:12px}
-dialog{color:var(--ink);box-shadow:0 18px 70px #102d3450}dialog input,dialog select{border-color:#a8bdbd}#status{padding:10px 14px;background:#fff4dd;color:#5e450d;border-radius:9px}
-footer{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
-@media(max-width:540px){main{padding-inline:14px}.stats{gap:8px}.stat{min-width:90px;padding:11px}.stat strong{font-size:24px}nav button{padding:8px}td,th{padding:9px}.toolbar #controls{width:100%}}
-</style></head><body><header><div class="brand"><span class="brand-mark" aria-hidden="true">GS</span><div><strong>Gym System</strong><small>Bahrain Polytechnic</small></div></div></header><main><div class="intro"><h1>Gym administration</h1><p>Explore the system with fictional records. Changes stay in this browser.</p></div><p id="status" role="status"></p><div class="stats" id="stats"></div><nav aria-label="Dashboard sections" id="nav"></nav><section class="panel" aria-labelledby="title"><div class="toolbar"><h2 id="title"></h2><div id="controls"></div></div><div id="content"></div></section><footer><button type="button" id="exit">Save and exit</button> <a href="https://github.com/7ussaino2005/Gym-System">View original Java project on GitHub</a></footer></main>
-<dialog id="editor"><form id="form"><h2 id="formTitle"></h2><div id="fields"></div><label id="typeLabel">Type<select name="type"></select></label><label id="trainerLabel">Personal trainer<select name="trainer"></select></label><p id="error" role="alert"></p><div class="toolbar"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save record</button></div></form></dialog>
+#controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.startup{margin:0}.overview .tile-icon,.overview b{display:none}.form-help{margin:7px 0 14px}td .row-actions{display:flex;flex-wrap:wrap;gap:6px}#status{color:#526174}#status:empty{display:none}
+#detailFields{display:grid;grid-template-columns:minmax(100px,1fr) 2fr;gap:10px 16px}#detailFields dt{font-weight:650}#detailFields dd{margin:0;overflow-wrap:anywhere}</style></head><body><header>Gym System</header><main><h1>Gym dashboard</h1><p>Explore the system with sample records. Changes stay in this browser.</p><p id="status" role="status"></p><div class="stats" id="stats"></div><nav aria-label="Dashboard sections" id="nav"></nav><section class="panel" aria-labelledby="title"><div class="toolbar"><h2 id="title"></h2><div id="controls"></div></div><div id="content"></div></section><footer><button type="button" id="exit">Save and exit</button> <a href="https://github.com/7ussaino2005/Gym-System">View original Java project on GitHub</a></footer></main>
+<dialog id="editor"><form id="form"><h2 id="formTitle"></h2><p id="formHelp" class="form-help"></p><div id="fields"></div><label id="typeLabel">Type<select name="type"></select></label><label id="trainerLabel">Personal trainer<select name="trainer"></select></label><p id="error" role="alert"></p><div class="toolbar"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save record</button></div></form></dialog>
+<dialog id="recordDetails" aria-labelledby="detailTitle"><h2 id="detailTitle"></h2><dl id="detailFields"></dl><div class="toolbar"><form method="dialog"><button>Close</button></form><button class="primary" id="detailEdit" type="button">Edit record</button></div></dialog>
 <script>
 const key='gym-system-portfolio-v1';
 function makeSampleData(){
@@ -132,7 +118,7 @@ for(const tab of tabs){const control=button(tab,()=>goTo(tab));byId('nav').appen
 function drawRows(){if(section==='Dashboard'){
 const cards=element('div');cards.className='overview';
 const destinations=[['Members','Add or update memberships and assign personal trainers.'],['Employees','Manage employee and trainer records.'],['Trainers','Review trainers and their current member assignments.'],['Reports','See membership totals and trainer assignments by membership type.']];
-for(const [index,[name,description]] of destinations.entries()){const card=button('',()=>goTo(name));const icon=element('span',['◉','▦','↔','▤'][index]);icon.className='tile-icon';icon.setAttribute('aria-hidden','true');card.append(icon,element('strong',name),element('span',description),element('b','Open '+name.toLowerCase()+' →'));cards.append(card)}
+for(const [name,description] of destinations){const card=button('',()=>goTo(name));card.append(element('strong',name),element('span',description));cards.append(card)}
 byId('content').replaceChildren(cards);return}
 if(section==='Reports'){table(['Membership type','Members','With a trainer'],memberTypes.map(type=>{const people=data.Members.filter(item=>item.type===type);return[type,String(people.length),String(people.filter(item=>item.trainer).length)]}));return}
 if(section==='Trainers'){
@@ -153,7 +139,7 @@ if(section==='Trainers'){
   return;
 }
 const records=data[section];const rows=records.filter(item=>[item.name,item.type,item.publicId,item.id].some(value=>value.toLowerCase().includes(query.trim().toLowerCase())));if(!rows.length){byId('content').replaceChildren(element('p','No matching records.'));return}
-table(['ID','Name','Type',section==='Members'?'Personal trainer':section==='Trainers'?'Assigned members':'Actions',...(section==='Members'?['Actions']:[])],pageRows(rows).map(item=>{const actions=element('div');actions.append(button('Edit',()=>openEditor(item)),' ',button('Delete',()=>remove(item)));if(section==='Members')return[item.publicId,item.name,item.type,trainers().find(person=>person.id===item.trainer)?.name||'Unassigned',actions];if(section==='Trainers')return[item.publicId,item.name,item.type,String(assigned(item.id))];return[item.publicId,item.name,item.type,actions]}));addPager(rows.length)}
+table(['ID','Name','Type',section==='Members'?'Personal trainer':'Phone',...(section==='Members'?['Actions']:['Monthly salary','Actions'])],pageRows(rows).map(item=>{const actions=element('div');actions.className='row-actions';actions.append(button('View',()=>viewRecord(item)),button('Edit',()=>openEditor(item)),button('Delete',()=>remove(item)));if(section==='Members')return[item.publicId,item.name,item.type,trainers().find(person=>person.id===item.trainer)?.name||'Unassigned',actions];if(section==='Trainers')return[item.publicId,item.name,item.type,String(assigned(item.id))];return[item.publicId,item.name,item.type,item.phone,formatSalary(item.salary),actions]}));addPager(rows.length)}
 function render(){byId('status').textContent=storageWarning;byId('stats').replaceChildren();for(const [label,count] of [['Members',data.Members.length],['Employees',data.Employees.length],['Personal trainers',trainers().length]]){const stat=element('div',label);stat.className='stat';stat.append(element('strong',count));byId('stats').append(stat)}[...byId('nav').children].forEach((node,i)=>node.setAttribute('aria-selected',String(tabs[i]===section)));byId('title').textContent=section==='Reports'?'Membership report':section;const controls=byId('controls');controls.replaceChildren();if(section==='Dashboard')controls.append(startupControl());if(section==='Reports'){const download=button('Download marketing report',downloadReport);download.className='primary';controls.append(download)}if(section==='Members'||section==='Employees'){const search=element('input');search.placeholder='Search records';search.setAttribute('aria-label','Search records');search.value=query;search.oninput=()=>{query=search.value;page=1;drawRows()};controls.append(search);if(section!=='Trainers'){const add=button(section==='Members'?'Add member':'Add employee',()=>openEditor());add.className='primary';controls.append(' ',add)}}drawRows()}
 
 function parseStartup(source){
@@ -264,11 +250,29 @@ function showFields(){
   }
 }
 typeControl.onchange=()=>{Object.assign(draft,fieldValues());showFields()};
+function formatSalary(value){
+  return new Intl.NumberFormat('en-BH',{style:'currency',currency:'BHD'}).format(Number(value));
+}
+function viewRecord(item){
+  const fields=section==='Employees'?[...commonFields,...employeeFields]:
+    [...commonFields,...memberFields,...(item.type==='Student'?studentFields:staffFields)];
+  const dialog=byId('recordDetails');
+  const details=byId('detailFields');
+  details.replaceChildren();
+  byId('detailTitle').textContent=item.name+' · '+item.publicId;
+  const rows=[['Type',item.type],...fields.map(([key,label])=>[label,key==='salary'?formatSalary(item[key]):item[key]])];
+  if(section==='Members')rows.push(['Personal trainer',trainers().find(trainer=>trainer.id===item.trainer)?.name||'Unassigned']);
+  if(item.type==='Personal trainer')rows.push(['Assigned members',String(assigned(item.id))]);
+  for(const [label,value] of rows)details.append(element('dt',label),element('dd',value||'None'));
+  byId('detailEdit').onclick=()=>{dialog.close();openEditor(item)};
+  dialog.showModal();
+}
 function openEditor(item){
   editing=item?.id||null;draft={...item};
   const member=section==='Members';
   byId('formTitle').textContent=(editing?'Edit ':'Add ')+(member?'member':'employee')+(editing?' · '+item.publicId:'');
   byId('error').textContent='';
+  byId('formHelp').textContent=editing?'Update the details and save your changes.':'Complete the required fields. An ID is assigned when you save.';
   typeControl.replaceChildren(...(member?memberTypes:employeeTypes).map(value=>new Option(value,value)));
   if(item)typeControl.value=item.type;
   byId('trainerLabel').hidden=!member;
