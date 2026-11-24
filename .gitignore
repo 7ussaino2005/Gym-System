@@ -1,0 +1,9 @@
+.DS_Store
+/build/
+/dist/
+/out/
+/nbproject/private/
+/gymdata.ser
+/[Ss]tartup.txt
+/marketingReport.txt
+*.class
