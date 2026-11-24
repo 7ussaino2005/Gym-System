@@ -2,31 +2,274 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gym System</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font:15px system-ui;color:#1d2735;background:#f4f6f8}header{background:#172333;color:white;padding:24px max(24px,calc((100% - 1120px)/2));font-size:20px;font-weight:750}main{max-width:1120px;margin:auto;padding:44px 24px}h1{font-size:clamp(34px,7vw,52px);margin:0;letter-spacing:-.055em}p{color:#526174}nav,.stats,.toolbar{display:flex;gap:12px;flex-wrap:wrap}.stats{margin:28px 0}.stat{flex:1;min-width:140px;background:white;padding:22px;border:1px solid #dce3ea;border-radius:14px}.stat strong{display:block;font-size:30px;margin-top:8px}.panel{background:white;margin-top:16px;padding:24px;border:1px solid #dce3ea;border-radius:16px}.toolbar{justify-content:space-between;align-items:center}h2{margin:0}button,input,select{font:inherit;border:1px solid #aab8c6;border-radius:8px;padding:9px 12px;background:white;color:inherit}button{cursor:pointer}button[aria-selected=true],.primary{background:#075e54;color:white;border-color:#075e54}button:focus-visible,a:focus-visible{outline:3px solid #089484;outline-offset:2px}.table-wrap{overflow:auto;margin-top:16px}table{width:100%;border-collapse:collapse;min-width:500px}td,th{text-align:left;padding:13px 8px;border-bottom:1px solid #e1e7ed}th{font-size:13px;color:#526174}dialog{border:0;border-radius:16px;padding:24px;width:min(420px,90vw)}dialog::backdrop{background:#17233399}label{display:grid;gap:6px;margin:15px 0}footer{margin-top:24px;color:#526174}a{color:#075e54}
-</style></head><body><header>Gym System</header><main><h1>Gym dashboard</h1><p>Explore the system with sample records. Changes stay in this browser.</p><div class="stats" id="stats"></div><nav aria-label="Dashboard sections" id="nav"></nav><section class="panel" aria-labelledby="title"><div class="toolbar"><h2 id="title"></h2><div id="controls"></div></div><div id="content"></div></section><footer><a href="https://github.com/7ussaino2005/Gym-System">View original Java project on GitHub</a></footer></main>
-<dialog id="editor"><form id="form"><h2 id="formTitle"></h2><label>Name<input name="name" required maxlength="80"></label><label id="typeLabel">Type<select name="type"></select></label><label id="trainerLabel">Personal trainer<select name="trainer"></select></label><div class="toolbar"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save record</button></div></form></dialog>
+.overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:20px}.overview button{text-align:left;padding:20px;border-color:#dce3ea;background:#f7faf9}.overview button:hover{border-color:#075e54}.overview strong,.overview span{display:block}.overview strong{font-size:18px;margin-bottom:6px;color:#075e54}.overview span{color:#526174}.toolbar input{margin-right:4px}dialog{max-height:90vh;overflow:auto;width:min(620px,94vw)}#fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:0 14px}#fields input{width:100%}[hidden]{display:none!important}#error{color:#9b2727}details{padding:16px;margin-top:12px;border:1px solid #dce3ea;border-radius:10px}summary{cursor:pointer;font-weight:700}details li{margin:10px 0}td:first-child{overflow-wrap:anywhere;max-width:130px}.pager{display:flex;align-items:center;gap:12px;margin-top:16px}.pager button:disabled{opacity:.45;cursor:default}#status:empty{display:none}</style></head><body><header>Gym System</header><main><h1>Gym dashboard</h1><p>Explore the system with sample records. Changes stay in this browser.</p><p id="status" role="status"></p><div class="stats" id="stats"></div><nav aria-label="Dashboard sections" id="nav"></nav><section class="panel" aria-labelledby="title"><div class="toolbar"><h2 id="title"></h2><div id="controls"></div></div><div id="content"></div></section><footer><button type="button" id="exit">Save and exit</button> <a href="https://github.com/7ussaino2005/Gym-System">View original Java project on GitHub</a></footer></main>
+<dialog id="editor"><form id="form"><h2 id="formTitle"></h2><div id="fields"></div><label id="typeLabel">Type<select name="type"></select></label><label id="trainerLabel">Personal trainer<select name="trainer"></select></label><p id="error" role="alert"></p><div class="toolbar"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save record</button></div></form></dialog>
 <script>
 const key='gym-system-portfolio-v1';
-const samples={Members:[{id:'m1',name:'Sara Ahmed',type:'Student',trainer:'e1'},{id:'m2',name:'Omar Ali',type:'Polytechnic staff',trainer:''},{id:'m3',name:'Mariam Hasan',type:'Student',trainer:'e2'}],Employees:[{id:'e1',name:'Noor Salman',type:'Personal trainer'},{id:'e2',name:'Yusuf Khalid',type:'Personal trainer'},{id:'e3',name:'Dana Isa',type:'Employee'}]};
-let data=structuredClone(samples);
-try{const saved=localStorage.getItem(key);if(saved)data=JSON.parse(saved)}catch{}
+function makeSampleData(){
+  const firstNames=['Sara','Omar','Mariam','Noor','Yusuf','Dana','Layla','Ali','Aisha','Hassan','Zainab','Khalid'];
+  const surnames=['Ahmed','Salman','Hasan','Khalid','Jassim','Mahdi','Nasser','Isa','Abbas','Hussain','Yaqoob','Ibrahim'];
+  const base=(i,offset)=>({
+    first:firstNames[(i+offset)%12],surname:surnames[Math.floor(i/12)%12],
+    address:'Fictional address '+(i+1),phone:'0000'+String(i+offset*100).padStart(4,'0')
+  });
+  const Employees=Array.from({length:120},(_,i)=>{
+    const person=base(i,5);
+    return {...person,id:'E-'+(100+i),name:person.first+' '+person.surname,
+      type:i<18?'Personal trainer':'Employee',salary:(420+i*7).toFixed(3)};
+  });
+  const Members=Array.from({length:144},(_,i)=>{
+    const person=base(i,0);
+    const staff=i%3===0;
+    return {...person,id:'M-'+(100+i),name:person.first+' '+person.surname,
+      type:staff?'Polytechnic staff':'Student',dob:(staff?'1988':'2003')+'-06-'+String(1+i%28).padStart(2,'0'),
+      gender:['Female','Male','Prefer not to say'][i%3],trainer:i%5?Employees[i%18].id:'',
+      ...(staff?{position:'Lecturer',department:['ICT','Business','Engineering'][Math.floor(i/3)%3]}:
+        {course:['Information Technology','Business','Engineering'][i%3],team:i%4?'':'Volleyball'})};
+  });
+  return {Members,Employees,datasetVersion:2};
+}
+let data=makeSampleData();
+let storageWarning='';
+try{
+  const saved=localStorage.getItem(key);
+  if(saved){
+    const previous=JSON.parse(saved);
+    if(!Array.isArray(previous.Members)||!Array.isArray(previous.Employees))throw new Error('Invalid stored records');
+    if(previous.datasetVersion===2)data=previous;
+    else {
+      for(const group of ['Members','Employees']){
+        const ids=new Set(previous[group].map(record=>record.id));
+        data[group]=[...previous[group],...data[group].filter(record=>!ids.has(record.id))];
+      }
+    }
+  }
+}catch{storageWarning='Saved records could not be loaded. Sample records are shown.'}
+const memberTypes=['Student','Polytechnic staff'];
+const employeeTypes=['Employee','Personal trainer'];
+const commonFields=[['first','First name'],['surname','Surname'],['address','Address'],['phone','Phone']];
+const staffFields=[['position','Position'],['department','Department']];
+const studentFields=[['course','Course'],['team','Sports team (optional)']];
+const memberFields=[['dob','Date of birth','date'],['gender','Gender']];
+const employeeFields=[['salary','Monthly salary (BHD)','number']];
+for(const group of ['Members','Employees']){
+  const records=data[group];
+  for(const record of records){
+    if(record.type==='General')record.type='Student';
+    if(!record.first){
+      [record.first,record.surname]=record.name.split(/ (.*)/s);
+      record.address='Sample address';
+      record.phone='00000000';
+      if(group==='Members'){
+        record.dob='2000-01-01';record.gender='Unspecified';
+        Object.assign(record,record.type==='Student'?{course:'Information Technology',team:''}:{position:'Lecturer',department:'ICT'});
+      }else record.salary='850.000';
+    }
+  }
+}
 const byId=id=>document.getElementById(id);
-const tabs=['Members','Employees','Trainers','Reports'];
-const trainers=()=>data.Employees.filter(item=>item.type==='Personal trainer');
-const assigned=id=>data.Members.filter(member=>member.trainer===id).length;
-let section='Members',editing=null,query='';
+const tabs=['Dashboard','Members','Employees','Trainers','Reports'];
+const trainers=()=>data.Employees.filter(record=>record.type==='Personal trainer');
+const assigned=id=>data.Members.filter(record=>record.trainer===id).length;
+let section='Dashboard',editing=null,query='';
 function element(tag,value){const node=document.createElement(tag);if(value!==undefined)node.textContent=value;return node}
 function button(label,action){const node=element('button',label);node.type='button';node.onclick=action;return node}
-function persist(){try{localStorage.setItem(key,JSON.stringify(data))}catch{}render()}
+function save(){
+  try{localStorage.setItem(key,JSON.stringify(data));storageWarning='';return true}
+  catch{storageWarning='Browser storage is unavailable. Keep this tab open to retain changes.';return false}
+}
+function persist(){save();render()}
+let page=1;const pageSize=15;
+function goTo(tab){section=tab;query='';page=1;render()}
+function pageRows(rows){
+  const last=Math.max(1,Math.ceil(rows.length/pageSize));page=Math.min(page,last);
+  return rows.slice((page-1)*pageSize,page*pageSize);
+}
+function addPager(total){
+  const last=Math.ceil(total/pageSize);if(last<=1)return;
+  const bar=element('div');bar.className='pager';
+  const back=button('Previous',()=>{page--;drawRows()}), next=button('Next',()=>{page++;drawRows()});
+  back.disabled=page<=1;next.disabled=page>=last;
+  bar.append(back,element('span','Page '+page+' of '+last+' · '+total+' records'),next);
+  byId('content').append(bar);
+}
+
 function table(headers,rows){const wrap=element('div');wrap.className='table-wrap';const t=element('table');const head=t.createTHead().insertRow();for(const h of headers)head.append(element('th',h));const body=t.createTBody();for(const row of rows){const tr=body.insertRow();for(const value of row){const cell=tr.insertCell();cell.append(value)}}wrap.append(t);byId('content').replaceChildren(wrap)}
-for(const tab of tabs){const control=button(tab,()=>{section=tab;query='';render()});byId('nav').append(control)}
-function drawRows(){if(section==='Reports'){table(['Membership type','Members','With a trainer'],['Student','Polytechnic staff','General'].map(type=>{const people=data.Members.filter(item=>item.type===type);return[type,String(people.length),String(people.filter(item=>item.trainer).length)]}));return}
-const records=section==='Trainers'?trainers():data[section];const rows=records.filter(item=>[item.name,item.type].some(value=>value.toLowerCase().includes(query.toLowerCase())));if(!rows.length){byId('content').replaceChildren(element('p','No matching records.'));return}
-table(['Name','Type',section==='Members'?'Personal trainer':section==='Trainers'?'Assigned members':'Actions',...(section==='Members'?['Actions']:[])],rows.map(item=>{const actions=element('div');actions.append(button('Edit',()=>openEditor(item)),' ',button('Delete',()=>remove(item)));if(section==='Members')return[item.name,item.type,trainers().find(person=>person.id===item.trainer)?.name||'Unassigned',actions];if(section==='Trainers')return[item.name,item.type,String(assigned(item.id))];return[item.name,item.type,actions]}))}
-function render(){byId('stats').replaceChildren();for(const [label,count] of [['Members',data.Members.length],['Employees',data.Employees.length],['Personal trainers',trainers().length]]){const stat=element('div',label);stat.className='stat';stat.append(element('strong',count));byId('stats').append(stat)}[...byId('nav').children].forEach((node,i)=>node.setAttribute('aria-selected',String(tabs[i]===section)));byId('title').textContent=section==='Reports'?'Membership report':section;const controls=byId('controls');controls.replaceChildren();if(section!=='Reports'){const search=element('input');search.placeholder='Search records';search.setAttribute('aria-label','Search records');search.value=query;search.oninput=()=>{query=search.value;drawRows()};controls.append(search);if(section!=='Trainers'){const add=button(section==='Members'?'Add member':'Add employee',()=>openEditor());add.className='primary';controls.append(' ',add)}}drawRows()}
+for(const tab of tabs){const control=button(tab,()=>goTo(tab));byId('nav').append(control)}
+function drawRows(){if(section==='Dashboard'){
+const cards=element('div');cards.className='overview';
+const destinations=[['Members','Add or update memberships and assign personal trainers.'],['Employees','Manage employee and trainer records.'],['Trainers','Review trainers and their current member assignments.'],['Reports','See membership totals and trainer assignments by membership type.']];
+for(const [name,description] of destinations){const card=button('',()=>goTo(name));card.append(element('strong',name),element('span',description));cards.append(card)}
+byId('content').replaceChildren(cards);return}
+if(section==='Reports'){table(['Membership type','Members','With a trainer'],memberTypes.map(type=>{const people=data.Members.filter(item=>item.type===type);return[type,String(people.length),String(people.filter(item=>item.trainer).length)]}));return}
+if(section==='Trainers'){
+  const roster=element('div');
+  for(const trainer of trainers()){
+    const card=element('details'), summary=element('summary',trainer.name+' · '+assigned(trainer.id)+' assigned');
+    const list=element('ul');
+    for(const member of data.Members.filter(item=>item.trainer===trainer.id)){
+      const row=element('li',member.name+' · '+member.id+' ');
+      row.append(button('Remove assignment',()=>{member.trainer='';persist()}));
+      list.append(row);
+    }
+    card.append(summary,list);
+    roster.append(card);
+  }
+  byId('content').replaceChildren(roster);
+  if(!trainers().length)roster.append(element('p','No personal trainers yet. Add one under Employees.'));
+  return;
+}
+const records=data[section];const rows=records.filter(item=>[item.name,item.type,item.id].some(value=>value.toLowerCase().includes(query.toLowerCase())));if(!rows.length){byId('content').replaceChildren(element('p','No matching records.'));return}
+table(['ID','Name','Type',section==='Members'?'Personal trainer':section==='Trainers'?'Assigned members':'Actions',...(section==='Members'?['Actions']:[])],pageRows(rows).map(item=>{const actions=element('div');actions.append(button('Edit',()=>openEditor(item)),' ',button('Delete',()=>remove(item)));if(section==='Members')return[item.id,item.name,item.type,trainers().find(person=>person.id===item.trainer)?.name||'Unassigned',actions];if(section==='Trainers')return[item.id,item.name,item.type,String(assigned(item.id))];return[item.id,item.name,item.type,actions]}));addPager(rows.length)}
+function render(){byId('status').textContent=storageWarning;byId('stats').replaceChildren();for(const [label,count] of [['Members',data.Members.length],['Employees',data.Employees.length],['Personal trainers',trainers().length]]){const stat=element('div',label);stat.className='stat';stat.append(element('strong',count));byId('stats').append(stat)}[...byId('nav').children].forEach((node,i)=>node.setAttribute('aria-selected',String(tabs[i]===section)));byId('title').textContent=section==='Reports'?'Membership report':section;const controls=byId('controls');controls.replaceChildren();if(section==='Dashboard')controls.append(startupControl());if(section==='Reports')controls.append(button('Download marketing report',downloadReport));if(section==='Members'||section==='Employees'){const search=element('input');search.placeholder='Search records';search.setAttribute('aria-label','Search records');search.value=query;search.oninput=()=>{query=search.value;page=1;drawRows()};controls.append(search);if(section!=='Trainers'){const add=button(section==='Members'?'Add member':'Add employee',()=>openEditor());add.className='primary';controls.append(' ',add)}}drawRows()}
+
+function parseStartup(source){
+  const lines=source.replace(/^﻿/,'').split(/\r?\n/);
+  let cursor=0;
+  function take(required=true){
+    if(cursor>=lines.length)throw new Error('Missing data at line '+(cursor+1)+'.');
+    const value=lines[cursor++].trim();
+    if(required&&!value)throw new Error('Missing value at line '+cursor+'.');
+    return value;
+  }
+  function count(){
+    const value=take();
+    if(!/^\d+$/.test(value)||Number(value)>lines.length-cursor)throw new RangeError('Invalid record count at line '+cursor+'.');
+    return Number(value);
+  }
+  function date(value){
+    const parts=value.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/);
+    const iso=parts?parts[3]+'-'+parts[2].padStart(2,'0')+'-'+parts[1].padStart(2,'0'):value;
+    const parsed=new Date(iso+'T00:00:00Z');
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||isNaN(parsed)||parsed.toISOString().slice(0,10)!==iso||parsed>new Date()){
+      throw new Error('Invalid date of birth at line '+cursor+'. Use YYYY-MM-DD or DD/MM/YYYY.');
+    }
+    return iso;
+  }
+  const imported={Employees:[],Members:[],datasetVersion:2};
+  const prefix=globalThis.crypto?.randomUUID?.()||String(Date.now());
+  const employees=count();
+  for(let i=0;i<employees;i++){
+    const kind=take().toUpperCase();
+    if(kind!=='E'&&kind!=='PT')throw new Error('Expected E or PT at line '+cursor+'.');
+    const first=take(),surname=take(),address=take(),phone=take(),salary=take();
+    if(!/^\d+(\.\d{1,3})?$/.test(salary))throw new Error('Invalid salary at line '+cursor+'.');
+    const trainer='E-'+prefix+'-'+(100+i);
+    imported.Employees.push({id:trainer,first,surname,name:first+' '+surname,address,phone,salary,type:kind==='PT'?'Personal trainer':'Employee'});
+    if(kind==='E')continue;
+    const members=count();
+    for(let j=0;j<members;j++){
+      const kind=take().toLowerCase();
+      if(kind!=='staff'&&kind!=='student')throw new Error('Expected staff or student at line '+cursor+'.');
+      const first=take(),surname=take(),address=take(),dob=date(take()),phone=take(),gender=take();
+      const extras=kind==='staff'?{position:take(),department:take()}:{course:take(),team:take(false)};
+      imported.Members.push({id:'M-'+prefix+'-'+(100+imported.Members.length),first,surname,name:first+' '+surname,address,dob,phone,gender,trainer,type:kind==='staff'?'Polytechnic staff':'Student',...extras});
+    }
+  }
+  if(lines.slice(cursor).some(line=>line.trim()))throw new Error('Unexpected data after the last record.');
+  return imported;
+}
+function startupControl(){
+  const label=element('label','Initialize from startup.txt');
+  label.className='startup';
+  const input=element('input');input.type='file';input.accept='.txt,text/plain';
+  input.onchange=async()=>{
+    const file=input.files[0];if(!file)return;
+    try{
+      const imported=parseStartup(await file.text());
+      if(confirm('Replace this browser’s records with '+imported.Members.length+' members and '+imported.Employees.length+' employees?')){
+        data=imported;persist();
+      }
+    }catch(error){byId('status').textContent=error.message||'Could not read startup.txt.'}
+    finally{input.value=''}
+  };
+  label.append(input);return label;
+}
+function downloadReport(){
+  const groups=[['Polytechnic staff',staffFields],['Student',studentFields]];
+  const lines=['BAHRAIN POLYTECHNIC GYM MARKETING REPORT',''];
+  for(const [type,fields] of groups){
+    const records=data.Members.filter(member=>member.type===type);
+    lines.push(type==='Student'?'Polytechnic students':'Polytechnic staff');
+    for(const record of records){
+      lines.push(record.name,'Address: '+record.address,'Phone: '+record.phone);
+      for(const [name,label] of fields)lines.push(label.replace(' (optional)','')+': '+(record[name]||'None'));
+      lines.push('');
+    }
+    lines.push('Total: '+records.length,'');
+  }
+  const url=URL.createObjectURL(new Blob([lines.join(String.fromCharCode(10))],{type:'text/plain'}));
+  const link=element('a');link.href=url;link.download='marketingReport.txt';link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
 const form=byId('form');
-function openEditor(item){editing=item?.id||null;const member=section==='Members';byId('formTitle').textContent=(editing?'Edit ':'Add ')+(member?'member':'employee');form.elements.name.value=item?.name||'';form.elements.type.replaceChildren(...(member?['Student','Polytechnic staff','General']:['Employee','Personal trainer']).map(value=>new Option(value,value)));if(item)form.elements.type.value=item.type;byId('trainerLabel').hidden=!member;byId('trainerLabel').style.display=member?'':'none';form.elements.trainer.replaceChildren(new Option('Unassigned',''),...trainers().map(t=>new Option(t.name,t.id)));form.elements.trainer.value=item?.trainer||'';byId('editor').showModal()}
+const typeControl=form.elements.namedItem('type');
+const trainerControl=form.elements.namedItem('trainer');
+let draft={};
+function formFields(){
+  if(section==='Employees')return [...commonFields,...employeeFields];
+  return [...commonFields,...memberFields,...(typeControl.value==='Student'?studentFields:staffFields)];
+}
+function fieldValues(){
+  return Object.fromEntries([...byId('fields').querySelectorAll('input')].map(input=>[input.name,input.value.trim()]));
+}
+function showFields(){
+  byId('fields').replaceChildren();
+  for(const [name,label,type] of formFields()){
+    const wrapper=element('label',label), input=element('input');
+    input.name=name;
+    input.type=type|| (name==='phone'?'tel':'text');
+    input.required=name!=='team';
+    input.value=draft[name]||'';
+    if(name==='salary'){input.min='0';input.step='0.001'}
+    if(name==='dob')input.max=new Date().toLocaleDateString('sv-SE');
+    if(name==='phone')input.pattern='[+]?[0-9 ]{7,24}';
+    wrapper.append(input);byId('fields').append(wrapper);
+  }
+}
+typeControl.onchange=()=>{Object.assign(draft,fieldValues());showFields()};
+function openEditor(item){
+  editing=item?.id||null;draft={...item};
+  const member=section==='Members';
+  byId('formTitle').textContent=(editing?'Edit ':'Add ')+(member?'member':'employee')+(editing?' · '+editing:'');
+  byId('error').textContent='';
+  typeControl.replaceChildren(...(member?memberTypes:employeeTypes).map(value=>new Option(value,value)));
+  if(item)typeControl.value=item.type;
+  byId('trainerLabel').hidden=!member;
+  trainerControl.replaceChildren(new Option('Unassigned',''),...trainers().map(t=>new Option(t.name,t.id)));
+  trainerControl.value=item?.trainer||'';
+  showFields();byId('editor').showModal();
+}
 byId('cancel').onclick=()=>byId('editor').close();
-form.onsubmit=event=>{event.preventDefault();const name=form.elements.name.value.trim();if(!name)return;const type=form.elements.type.value;if(section==='Employees'&&editing&&type!=='Personal trainer'&&assigned(editing)){alert('Remove this trainer’s member assignments first.');return}const item={id:editing||crypto.randomUUID(),name,type};if(section==='Members')item.trainer=form.elements.trainer.value;data[section]=editing?data[section].map(record=>record.id===editing?item:record):[...data[section],item];byId('editor').close();persist()};
-function remove(item){if(section==='Employees'&&assigned(item.id)){alert('Remove this trainer’s member assignments first.');return}if(confirm('Delete '+item.name+' from this demo?')){data[section]=data[section].filter(record=>record.id!==item.id);persist()}}
+form.onsubmit=event=>{
+  event.preventDefault();
+  const fields=fieldValues(), type=typeControl.value;
+  if(formFields().some(([name])=>name!=='team'&&!fields[name])){
+    byId('error').textContent='Complete all required fields.';return;
+  }
+  if(section==='Employees'&&editing&&type!=='Personal trainer'&&assigned(editing)){
+    byId('error').textContent='Remove this trainer’s member assignments first.';return;
+  }
+  const id=editing||(section==='Members'?'M-':'E-')+(globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2));
+  const item={...fields,id,type,name:fields.first+' '+fields.surname};
+  if(section==='Members')item.trainer=trainerControl.value;
+  data[section]=editing?data[section].map(record=>record.id===editing?item:record):[...data[section],item];
+  byId('editor').close();persist();
+};
+function remove(item){
+  if(section==='Employees'&&assigned(item.id)){alert('Remove this trainer’s member assignments first.');return}
+  if(confirm('Delete '+item.name+' from this demo?')){
+    data[section]=data[section].filter(record=>record.id!==item.id);persist();
+  }
+}
+byId('exit').onclick=()=>{
+  if(!save()){render();return}
+  byId('stats').hidden=true;byId('nav').hidden=true;byId('exit').hidden=true;
+  byId('controls').replaceChildren();
+  byId('title').textContent='Session ended';
+  byId('content').replaceChildren(element('p','Your changes were saved. You can close this tab.'),button('Return to dashboard',()=>{
+    byId('stats').hidden=false;byId('nav').hidden=false;byId('exit').hidden=false;goTo('Dashboard');
+  }));
+};
 render();
 </script></body></html>
